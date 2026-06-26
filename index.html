@@ -5,13 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Paytur Arcade OS v4.1</title>
     <style>
+        :root {
+            --neon-blue: #38b6ff;
+            --neon-pink: #ff3366;
+            --neon-green: #33cc66;
+            --neon-yellow: #ffff33;
+            --neon-purple: #b333ff;
+            --bg-dark: #070b11;
+            --panel-bg: rgba(20, 28, 38, 0.75);
+            --border-color: #213043;
+        }
+
         html, body {
             width: 100%;
             height: 100%;
             margin: 0;
             padding: 0;
             overflow: hidden;
-            background: #0b0f14;
+            background: #030508;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             color: #ffffff;
             user-select: none;
@@ -22,11 +33,39 @@
             justify-content: center;
         }
 
+        /* КОРПУС МОНІТОРА З RGB ПІДСВІЧУВАННЯМ */
+        .arcade-monitor-frame {
+            background: #10151f;
+            border-radius: 28px;
+            padding: 20px;
+            box-shadow: 
+                0 0 0 4px #2c3a4e,
+                0 20px 50px rgba(0,0,0,0.8),
+                inset 0 0 20px rgba(56, 182, 255, 0.2);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #1a2330;
+        }
+
+        .arcade-monitor-frame::before {
+            content: '';
+            position: absolute;
+            top: 5px; left: 5px; right: 5px; bottom: 5px;
+            border-radius: 24px;
+            border: 3px solid transparent;
+            background: linear-gradient(#10151f, #10151f) padding-box,
+                        linear-gradient(90deg, var(--neon-pink), var(--neon-purple), var(--neon-blue), var(--neon-green), var(--neon-yellow)) border-box;
+            opacity: 0.85;
+            pointer-events: none;
+        }
+
         /* СТАРТОВИЙ ВХІД */
         #welcome-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: #0f1319;
+            background: #070a0f;
             z-index: 100;
             display: flex;
             flex-direction: column;
@@ -34,26 +73,27 @@
             justify-content: center;
             padding: 20px;
             box-sizing: border-box;
+            border-radius: 20px;
         }
 
         .boot-box {
             width: 100%;
             max-width: 340px;
-            background: #182029;
-            border: 1px solid #2d3846;
+            background: #111822;
+            border: 1px solid var(--border-color);
             padding: 25px 20px;
             border-radius: 12px;
             text-align: center;
             box-sizing: border-box;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 15px rgba(56, 182, 255, 0.2);
         }
 
         .boot-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
             margin-bottom: 20px;
-            color: #38b6ff;
-            letter-spacing: 1px;
+            color: var(--neon-blue);
+            text-shadow: 0 0 8px rgba(56, 182, 255, 0.6);
         }
 
         .boot-field {
@@ -63,17 +103,16 @@
 
         .boot-field label {
             display: block;
-            font-size: 12px;
+            font-size: 11px;
             color: #8a99ad;
             margin-bottom: 6px;
-            font-weight: 600;
         }
 
         .boot-input {
             width: 100%;
             padding: 12px;
-            background: #0f1319;
-            border: 1px solid #384656;
+            background: #090d14;
+            border: 1px solid #253549;
             color: #fff;
             font-size: 15px;
             text-align: center;
@@ -90,312 +129,520 @@
         .device-btn {
             flex: 1;
             padding: 12px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: bold;
-            background: #222c38;
+            background: #17202b;
             color: #8a99ad;
-            border: 1px solid #384656;
+            border: 1px solid #253549;
             border-radius: 6px;
             cursor: pointer;
         }
 
         .device-btn.selected {
-            background: #38b6ff;
+            background: var(--neon-blue);
             color: #000;
-            border-color: #38b6ff;
+            box-shadow: 0 0 10px rgba(56, 182, 255, 0.5);
         }
 
         .launch-btn {
             width: 100%;
             padding: 14px;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: bold;
-            background: #38b6ff;
+            background: var(--neon-blue);
             color: #000;
             border: none;
             border-radius: 6px;
             cursor: pointer;
             margin-top: 10px;
-        }
-
-        /* ГОЛОВНИЙ МОБІЛЬНИЙ КОНТЕЙНЕР */
-        .arcade-layout {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            height: 100%;
-            max-width: 420px;
-            background: #141a22;
-            box-sizing: border-box;
-            padding: env(safe-area-inset-top, 10px) 15px env(safe-area-inset-bottom, 10px) 15px;
-            justify-content: space-between;
-        }
-
-        /* ВЕРХНЯ ПАНЕЛЬ */
-        .top-navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 5px;
-        }
-
-        .stat-block {
-            text-align: left;
-        }
-
-        .stat-label {
-            font-size: 11px;
-            color: #8a99ad;
-            font-weight: bold;
-            letter-spacing: 1px;
             text-transform: uppercase;
         }
 
-        .stat-value {
-            font-size: 20px;
+        /* ГОЛОВНИЙ КОНТЕЙНЕР */
+        .arcade-layout {
+            display: flex;
+            flex-direction: column;
+            width: 920px;
+            height: 560px;
+            background: var(--bg-dark);
+            border-radius: 20px;
+            box-sizing: border-box;
+            padding: 15px 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ШАПКА */
+        .top-navbar {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #141f2d;
+            margin-bottom: 15px;
+        }
+
+        .brand-block {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .brand-logo {
+            font-weight: 900;
+            color: #fff;
+            font-size: 15px;
+        }
+        .brand-logo span {
+            color: var(--neon-blue);
+            text-shadow: 0 0 8px rgba(56, 182, 255, 0.5);
+        }
+        .brand-ver {
+            font-size: 10px;
+            color: #52667d;
+            background: #111a24;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .center-stats {
+            display: flex;
+            gap: 30px;
+            background: #0d131a;
+            padding: 6px 25px;
+            border-radius: 30px;
+            border: 1px solid #192535;
+        }
+        .top-stat-item {
+            text-align: center;
+        }
+        .top-stat-lbl {
+            font-size: 9px;
+            color: #52667d;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .top-stat-val {
+            font-size: 15px;
             font-weight: 800;
-            color: #ffffff;
+            color: #fff;
+        }
+
+        .right-user-panel {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        .user-tag-pill {
+            background: #131d29;
+            border: 1px solid #203145;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            color: #fff;
         }
 
         /* ІГРОВА ЗОНА */
         .game-main-zone {
             display: flex;
             flex: 1;
-            gap: 12px;
-            align-items: stretch;
+            gap: 20px;
             min-height: 0;
-            margin-bottom: 12px;
+            position: relative;
         }
 
-        /* РАМКА ІГРОВОГО ПОЛЯ + CRT ФІЛЬТР */
         .playfield-frame {
-            flex: 1.3;
-            background: #090d12;
-            border: 3px solid #2575fc;
-            border-radius: 6px;
+            flex: 1.2;
+            background: #040609;
+            border: 2px solid #1c2b3d;
+            border-radius: 12px;
             position: relative;
             overflow: hidden;
-            transition: transform 0.05s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* ЕФЕКТ СТАРОГО ТЕЛЕВІЗОРА (CRT) */
-        .playfield-frame.crt-mode::after {
+        .crt-mode::after {
             content: " ";
             display: block;
             position: absolute;
             top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05));
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
             z-index: 10;
-            background-size: 100% 4px, 6px 100%;
+            background-size: 100% 4px;
             pointer-events: none;
         }
         
-        .playfield-frame.crt-mode canvas {
-            filter: contrast(1.2) brightness(1.1) saturate(1.1);
-        }
-
-        canvas {
-            width: 100%;
-            height: 100%;
+        canvas#gameCanvas {
+            height: 95%;
+            aspect-ratio: 12 / 20;
             display: block;
             image-rendering: pixelated;
+            background: #06090e;
+            border-radius: 6px;
         }
 
-        /* БІЧНА ПАНЕЛЬ */
-        .game-sidebar {
+        /* ОВЕРЛЕЙ МЕНЮ */
+        .overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-dark);
+            display: flex;
+            gap: 15px;
+            box-sizing: border-box;
+            z-index: 5;
+        }
+        .hidden { display: none !important; }
+
+        /* ЛІВИЙ СТОВПЧИК ДЛЯ СПИСКУ ІГОР */
+        .menu-list-side {
             flex: 0.7;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 8px;
+            background: rgba(13, 20, 30, 0.4);
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid #141f2d;
+            overflow-y: auto;
+        }
+        .menu-list-header {
+            font-size: 11px;
+            font-weight: bold;
+            color: #52667d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+            padding-left: 5px;
+        }
+
+        /* Кнопка гри у стовпчику */
+        .game-list-item {
+            background: #0f1520;
+            border: 1px solid #1a2636;
+            border-radius: 8px;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .game-list-item:hover {
+            background: #151d2c;
+            border-color: #2c3d54;
+        }
+        .game-list-item.selected-item {
+            background: linear-gradient(90deg, #162436 0%, #0f1622 100%);
+            border-color: var(--neon-blue);
+            box-shadow: inset 3px 0 0 var(--neon-blue);
+        }
+        .game-list-name {
             font-size: 12px;
+            font-weight: bold;
+            color: #8a99ad;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .game-list-item.selected-item .game-list-name {
+            color: #fff;
+            text-shadow: 0 0 8px rgba(56, 182, 255, 0.5);
+        }
+        .game-list-dot {
+            width: 6px; height: 6px;
+            background: #233349;
+            border-radius: 50%;
+        }
+        .game-list-item.selected-item .game-list-dot {
+            background: var(--neon-blue);
+            box-shadow: 0 0 6px var(--neon-blue);
+        }
+
+        /* ЦЕНТРАЛЬНА ЧАСТИНА */
+        .menu-preview-center-side {
+            flex: 1.1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .photo-style-card {
+            width: 100%;
+            max-width: 280px;
+            background: linear-gradient(135deg, #111a26 0%, #0a0f16 100%);
+            border: 2px solid var(--neon-blue);
+            border-radius: 14px;
+            padding: 15px;
+            box-sizing: border-box;
+            box-shadow: 0 0 20px rgba(56, 182, 255, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .photo-card-display {
+            width: 100%;
+            height: 160px;
+            background: #05080c;
+            border-radius: 8px;
+            border: 1px solid rgba(56, 182, 255, 0.3);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        .photo-card-display canvas {
+            width: 90px; height: 145px;
+        }
+
+        .photo-card-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+            text-shadow: 0 0 10px rgba(56, 182, 255, 0.6);
+        }
+
+        .photo-play-btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 13px;
+            font-weight: bold;
+            background: #38b6ff;
+            color: #000000;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(56, 182, 255, 0.4);
+            transition: transform 0.1s ease;
+        }
+        .photo-play-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* ПРАВИЙ СТОВПЧИК */
+        .menu-details-side {
+            flex: 0.6;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .details-panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            flex: 1;
+        }
+        .panel-sec-title {
+            font-size: 10px;
+            color: #52667d;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .score-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+            font-size: 12px;
+        }
+        .score-row span:last-child {
+            font-weight: bold;
+            color: var(--neon-yellow);
+        }
+
+        .controls-list {
+            margin-top: 15px;
+            font-size: 11px;
+            color: #8a99ad;
+            line-height: 1.6;
+        }
+        .controls-list div {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dashed #1a2533;
+            padding: 2px 0;
+        }
+        .controls-list span:last-child {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .system-status-box {
+            background: #090e14;
+            border: 1px solid #182433;
+            border-radius: 8px;
+            padding: 10px 12px;
+        }
+        .status-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 10px;
+            font-weight: bold;
+            color: #52667d;
+            text-transform: uppercase;
+        }
+        .status-indicator {
+            color: var(--neon-green);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .status-indicator::before {
+            content: '';
+            display: inline-block;
+            width: 6px; height: 6px;
+            background: var(--neon-green);
+            border-radius: 50%;
+            box-shadow: 0 0 6px var(--neon-green);
+        }
+        .status-desc {
+            font-size: 11px;
+            color: #fff;
+            font-weight: bold;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+
+        /* БІЧНА ПАНЕЛЬ ГРИ */
+        .game-sidebar {
+            flex: 0.35;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            box-sizing: border-box;
         }
 
         .sidebar-section {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 5px;
         }
 
         .sidebar-title {
             font-size: 10px;
             font-weight: bold;
-            color: #8a99ad;
-            letter-spacing: 0.5px;
+            color: #52667d;
+            text-transform: uppercase;
         }
 
         .preview-box {
-            width: 65px;
-            height: 55px;
-            background: #10151c;
-            border: 1px solid #2d3846;
-            border-radius: 4px;
+            width: 100%;
+            height: 65px;
+            background: #06090e;
+            border: 1px solid #1a2736;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
+        .preview-box canvas {
+            width: 70px; height: 55px;
+        }
 
+        .sidebar-counter-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #182433;
+            padding: 4px 0;
+        }
         .sidebar-counter-num {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
             color: #ffffff;
         }
 
-        /* КНОПКИ КЕРУВАННЯ ВНИЗУ */
-        .bottom-controls-grid {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 8px;
-            padding-bottom: 10px;
+        /* СУБОВЕРЛЕЇ */
+        .sub-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(6, 9, 14, 0.95);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            z-index: 15;
+        }
+        .menu-title {
+            font-size: 18px; font-weight: bold; margin-bottom: 12px;
+            text-transform: uppercase; color: var(--neon-pink);
+            text-shadow: 0 0 10px rgba(255, 51, 102, 0.5);
+        }
+        .menu-btn {
+            padding: 12px; font-size: 12px; font-weight: bold;
+            color: #fff; background: #16202c; border: 1px solid #28394e; border-radius: 6px;
+            cursor: pointer; width: 180px; margin-bottom: 8px; text-transform: uppercase;
+        }
+        .menu-btn:hover {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 8px rgba(56, 182, 255, 0.3);
+        }
+
+        /* КНОПКИ НА КОРПУСІ МОНІТОРА */
+        .monitor-hardware-bar {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 12px;
+            background: #0b0f14;
+            padding: 6px 15px;
+            border-radius: 30px;
+            border: 1px solid #1c2633;
+            width: fit-content;
+            margin-left: auto; margin-right: auto;
         }
 
         .flat-ctrl-btn {
-            background: #1f2732;
-            border: 1px solid #344356;
-            border-radius: 8px;
-            aspect-ratio: 1 / 1;
+            background: #141b24;
+            border: 1px solid #222f40;
+            border-radius: 50%;
+            width: 32px; height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
-            color: #ffffff;
-            cursor: pointer;
-            font-weight: bold;
-            touch-action: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .flat-ctrl-btn:active {
-            background: #2b3746;
-            border-color: #38b6ff;
-        }
-
-        /* МЕНЮ ТА ОВЕРЛЕЇ */
-        .overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(9, 13, 18, 0.98);
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: flex-start;
-            padding: 15px; box-sizing: border-box; z-index: 5;
-            overflow-y: auto;
-        }
-        .hidden { display: none !important; }
-
-        .menu-title {
-            font-size: 13px; font-weight: bold; margin-bottom: 8px;
-            text-transform: uppercase; color: #38b6ff; letter-spacing: 1px;
-        }
-
-        /* КАРТКА ПРЕВ'Ю */
-        .menu-preview-card {
-            width: 100%;
-            background: #171f2a;
-            border: 1px solid #2d3b4d;
-            border-radius: 8px;
-            padding: 10px;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            box-sizing: border-box;
-            margin-bottom: 12px;
-        }
-
-        .menu-preview-canvas-box {
-            width: 60px;
-            height: 60px;
-            background: #0b0f14;
-            border: 1px solid #38b6ff;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-
-        .menu-preview-info {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            text-align: left;
-        }
-
-        .menu-preview-name {
-            font-size: 14px;
-            font-weight: bold;
-            color: #ffffff;
-            text-transform: uppercase;
-        }
-
-        .menu-preview-record {
             font-size: 11px;
-            color: #8a99ad;
-            margin-top: 2px;
-        }
-
-        .menu-preview-record span {
-            color: #ff9933;
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-        /* СІТКА ВИБОРУ ІГОР */
-        .menu-games-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            width: 100%;
-            margin-bottom: 12px;
-        }
-
-        .game-select-btn {
-            padding: 12px 4px;
-            font-size: 11px;
-            font-weight: bold;
-            color: #8a99ad;
-            background: #141a22;
-            border: 1px solid #253141;
-            border-radius: 6px;
+            color: #71859c;
             cursor: pointer;
-            text-transform: uppercase;
+            outline: none;
         }
 
-        .game-select-btn.active-selection {
-            background: #1e2936;
-            border-color: #38b6ff;
-            color: #38b6ff;
-            box-shadow: 0 0 8px rgba(56, 182, 255, 0.2);
-        }
-
-        /* ВЕЛИКА КНОПКА ЗАПУСКУ */
-        .big-play-btn {
-            width: 100%;
-            padding: 12px;
-            font-size: 13px;
-            font-weight: bold;
-            background: #2575fc;
+        .flat-ctrl-btn:active, .flat-ctrl-btn.active-press {
+            background: #1c2836;
+            border-color: var(--neon-blue);
             color: #fff;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            box-shadow: 0 0 8px rgba(56, 182, 255, 0.4);
         }
 
-        .mini-btn { font-size: 12px; padding: 5px 10px; background: #1e2631; color: #fff; border: 1px solid #344356; border-radius: 4px; cursor: pointer;}
-        .mini-btn.active { background: #38b6ff; color: #000; }
-        .menu-btn {
-            padding: 12px; font-size: 13px; font-weight: bold;
-            color: #fff; background: #1e2631; border: 1px solid #344356; border-radius: 6px;
-            cursor: pointer; width: 90%; margin-bottom: 8px; text-transform: uppercase;
-        }
+        .mini-btn { font-size: 10px; padding: 3px 8px; background: #121a24; color: #71859c; border: 1px solid #202d3d; border-radius: 4px; cursor: pointer; font-weight: bold;}
+        .mini-btn.active { background: var(--neon-blue); color: #000; border-color: var(--neon-blue); }
     </style>
 </head>
 <body>
+
+<div class="arcade-monitor-frame">
 
     <div id="welcome-screen">
         <div class="boot-box">
             <div class="boot-title" id="boot-title-text">PAYTUR ARCADE OS v4.1</div>
             
             <div class="boot-field" style="text-align: center; margin-bottom: 15px;">
-                <div style="display: flex; gap: 10px; justify-content: center;">
+                <div style="display: flex; gap: 8px; justify-content: center;">
                     <button class="mini-btn" id="boot-lang-uk" onclick="changeLanguage('uk')">UA</button>
                     <button class="mini-btn" id="boot-lang-en" onclick="changeLanguage('en')">EN</button>
                 </div>
@@ -403,7 +650,7 @@
 
             <div class="boot-field">
                 <label id="boot-lbl-nick">НІКНЕЙМ ГРАВЦЯ:</label>
-                <input type="text" id="boot-username" class="boot-input" maxlength="10" value="MR.PAYTUR">
+                <input type="text" id="boot-username" class="boot-input" maxlength="10" value="МАКСИМ">
             </div>
 
             <div class="boot-field">
@@ -421,16 +668,27 @@
     <div class="arcade-layout">
         
         <div class="top-navbar">
-            <div class="stat-block">
-                <div class="stat-label">SCORE</div>
-                <div id="score" class="stat-value">0</div>
+            <div class="brand-block">
+                <div class="brand-logo">PAYTUR <span>OS</span></div>
+                <div class="brand-ver">v4.1</div>
             </div>
-            <div class="stat-block" style="text-align: center;">
-                <div class="stat-label" id="current-game-name">ARCADE OS</div>
+            
+            <div class="center-stats">
+                <div class="top-stat-item">
+                    <div class="top-stat-lbl">SCORE</div>
+                    <div id="score" class="top-stat-val">0</div>
+                </div>
+                <div class="top-stat-item">
+                    <div class="top-stat-lbl">TOP</div>
+                    <div id="best-score" class="top-stat-val">0</div>
+                </div>
             </div>
-            <div class="stat-block" style="text-align: right;">
-                <div class="stat-label">TOP</div>
-                <div id="best-score" class="stat-value">0</div>
+
+            <div class="right-user-panel">
+                <div class="user-tag-pill" id="user-pill-name">МАКСИМ</div>
+                <button class="mini-btn" id="lang-uk" onclick="changeLanguage('uk')">UA</button>
+                <button class="mini-btn" id="lang-en" onclick="changeLanguage('en')">EN</button>
+                <button class="mini-btn" id="btn-mute" onclick="toggleMute()">🔊</button>
             </div>
         </div>
 
@@ -440,53 +698,90 @@
                 <canvas id="gameCanvas" width="240" height="400"></canvas>
 
                 <div id="start-menu" class="overlay">
-                    <div style="display: flex; gap: 8px; margin-bottom: 10px; width: 100%; justify-content: center;">
-                        <button class="mini-btn" id="lang-uk" onclick="changeLanguage('uk')">UA</button>
-                        <button class="mini-btn" id="lang-en" onclick="changeLanguage('en')">EN</button>
-                        <button class="mini-btn" id="btn-crt" onclick="toggleCRT()">📺 CRT</button>
-                        <button class="mini-btn" id="btn-mute" onclick="toggleMute()">🔊</button>
-                    </div>
-
-                    <div class="menu-title" id="tx-select-module">ОБЕРІТЬ ГРУ</div>
-                    <div id="user-display-tag" style="font-size: 11px; margin-bottom: 10px; color: #8a99ad;"></div>
-
-                    <div class="menu-preview-card">
-                        <div class="menu-preview-canvas-box">
-                            <canvas id="menuPreviewCanvas" width="65" height="65" style="width:100%; height:100%;"></canvas>
+                    
+                    <div class="menu-list-side">
+                        <div class="menu-list-header" id="tx-select-module">ОБЕРІТЬ ГРУ</div>
+                        
+                        <div class="game-list-item" id="item-tetris" onclick="selectListGame('tetris')">
+                            <div class="game-list-name">TETRIS</div>
+                            <div class="game-list-dot"></div>
                         </div>
-                        <div class="menu-preview-info">
-                            <div id="menu-game-title" class="menu-preview-name">TETRIS</div>
-                            <div class="menu-preview-record" id="menu-record-label">BEST: <span id="menu-game-record">0</span></div>
+                        <div class="game-list-item" id="item-snake" onclick="selectListGame('snake')">
+                            <div class="game-list-name">SNAKE</div>
+                            <div class="game-list-dot"></div>
+                        </div>
+                        <div class="game-list-item" id="item-pong" onclick="selectListGame('pong')">
+                            <div class="game-list-name">PONG</div>
+                            <div class="game-list-dot"></div>
+                        </div>
+                        <div class="game-list-item" id="item-brick" onclick="selectListGame('brick')">
+                            <div class="game-list-name">BRICK</div>
+                            <div class="game-list-dot"></div>
+                        </div>
+                        <div class="game-list-item" id="item-ttt" onclick="selectListGame('ttt')">
+                            <div class="game-list-name">TIC-TAC</div>
+                            <div class="game-list-dot"></div>
+                        </div>
+                        <div class="game-list-item" id="item-invaders" onclick="selectListGame('invaders')">
+                            <div class="game-list-name">SPACE</div>
+                            <div class="game-list-dot"></div>
                         </div>
                     </div>
 
-                    <div class="menu-games-grid">
-                        <button class="game-select-btn" id="sel-tetris" onclick="selectMenuGame('tetris')">1. Tetris</button>
-                        <button class="game-select-btn" id="sel-snake" onclick="selectMenuGame('snake')">2. Snake</button>
-                        <button class="game-select-btn" id="sel-pong" onclick="selectMenuGame('pong')">3. Pong</button>
-                        <button class="game-select-btn" id="sel-brick" onclick="selectMenuGame('brick')">4. Brick</button>
-                        <button class="game-select-btn" id="sel-ttt" onclick="selectMenuGame('ttt')">5. Tic-Tac</button>
-                        <button class="game-select-btn" id="sel-invaders" onclick="selectMenuGame('invaders')">6. Space</button>
+                    <div class="menu-preview-center-side">
+                        <div class="photo-style-card">
+                            <div class="photo-card-display">
+                                <canvas id="center-preview-canvas" width="100" height="150"></canvas>
+                            </div>
+                            <div class="photo-card-title" id="center-game-title">TETRIS</div>
+                            <button class="photo-play-btn" id="btn-play-selected" onclick="bootSelectedGame()">PLAY / ГРАТИ</button>
+                        </div>
                     </div>
 
-                    <button class="big-play-btn" id="btn-play-selected" onclick="bootSelectedGame()">ГРАТИ / PLAY</button>
+                    <div class="menu-details-side">
+                        <div class="details-panel">
+                            <div class="panel-sec-title" id="tx-game-details-title">ДЕТАЛІ МОДУЛЯ</div>
+                            <div style="font-size: 11px; color: #52667d; margin-bottom: 10px;" id="user-display-tag">ГРАВЕЦЬ: МАКСИМ</div>
+                            
+                            <div class="score-row">
+                                <span id="tx-lbl-best">BEST:</span>
+                                <span id="menu-game-record">0</span>
+                            </div>
+
+                            <div class="controls-list">
+                                <div class="panel-sec-title" style="margin-top: 10px; margin-bottom: 4px;">CONTROLS</div>
+                                <div><span>ACTION</span><span id="ctrl-rot">SPACE / UP</span></div>
+                                <div><span>MOVE</span><span id="ctrl-move">LEFT / RIGHT</span></div>
+                                <div><span>DROP</span><span id="ctrl-drop">DOWN</span></div>
+                            </div>
+                        </div>
+
+                        <div class="system-status-box">
+                            <div class="status-header">
+                                <span>SYSTEM STATUS</span>
+                                <div class="status-indicator">ONLINE</div>
+                            </div>
+                            <div class="status-desc" id="hardware-control-desc">CONTROL: KEYBOARD (PC)</div>
+                        </div>
+                    </div>
+
                 </div>
 
-                <div id="pause-menu" class="overlay hidden">
+                <div id="pause-menu" class="sub-overlay hidden">
                     <div class="menu-title" id="tx-paused">PAUSED</div>
                     <button class="menu-btn" id="tx-resume" onclick="togglePause()">RESUME</button>
                     <button class="menu-btn" onclick="showStartMenu()">QUIT</button>
                 </div>
 
-                <div id="game-over-menu" class="overlay hidden">
+                <div id="game-over-menu" class="sub-overlay hidden">
                     <div class="menu-title" id="over-title">GAME OVER</div>
-                    <div id="final-score" style="margin-bottom: 15px; font-size: 14px; font-weight: bold;"></div>
+                    <div id="final-score" style="margin-bottom: 15px; font-size: 13px; font-weight: bold; color: #8a99ad;"></div>
                     <button class="menu-btn" id="tx-again" onclick="restartCurrentGame()">TRY AGAIN</button>
                     <button class="menu-btn" onclick="showStartMenu()">MAIN MENU</button>
                 </div>
             </div>
 
-            <div class="game-sidebar">
+            <div class="game-sidebar" id="gameSidebarPanel">
                 <div class="sidebar-section">
                     <div class="sidebar-title">NEXT</div>
                     <div class="preview-box">
@@ -519,16 +814,17 @@
 
         </div>
 
-        <div class="bottom-controls-grid">
+        <div class="monitor-hardware-bar">
             <button class="flat-ctrl-btn" id="btn-rot-ccw">↺</button>
             <button class="flat-ctrl-btn" id="btn-rot-cw">↻</button>
-            <button class="flat-ctrl-btn" id="btn-pause-flat">Ⅱ</button>
+            <button class="flat-ctrl-btn" id="btn-game-pause">Ⅱ</button>
             <button class="flat-ctrl-btn" id="btn-move-left">◀</button>
             <button class="flat-ctrl-btn" id="btn-move-down">▼</button>
             <button class="flat-ctrl-btn" id="btn-move-right">▶</button>
         </div>
 
     </div>
+</div>
 
 <script>
 const safeStorage = {
@@ -546,8 +842,9 @@ const i18n = {
         btnLaunch: "ЗАПУСТИТИ СИСТЕМУ",
         selectModule: "ОБЕРІТЬ ГРУ", userTag: "ГРАВЕЦЬ: ",
         paused: "ПАУЗА", resume: "ПРОДОВЖИТИ", failure: "ГРУ ЗАВЕРШЕНО", again: "ЗНОВУ СТАРТ",
-        resultStr: ", РЕЗУЛЬТАТ: ",
-        victory: "ПЕРЕМОГА!", draw: "НІЧИЯ!", youWin: "ТИ ВИГРАВ!", cpuWins: "РОБОТ ВИГРАВ!"
+        resultStr: ", РЕЗУЛЬТАТ: ", detailsTitle: "ДЕТАЛІ МОДУЛЯ", lblBest: "РЕКОРД:",
+        victory: "ПЕРЕМОГА!", draw: "НІЧИЯ!", youWin: "ТИ ВИГРАВ!", cpuWins: "РОБОТ ВИГРАВ!",
+        ctrlKb: "CONTROL: KEYBOARD (PC)", ctrlTouch: "CONTROL: TOUCH PAD"
     },
     en: {
         bootTitle: "PAYTUR ARCADE OS v4.1",
@@ -558,15 +855,15 @@ const i18n = {
         btnLaunch: "START SYSTEM",
         selectModule: "SELECT MODULE", userTag: "PLAYER: ",
         paused: "PAUSED", resume: "RESUME", failure: "GAME OVER", again: "TRY AGAIN",
-        resultStr: ", SCORE: ",
-        victory: "VICTORY!", draw: "DRAW!", youWin: "YOU WIN!", cpuWins: "CPU WINS!"
+        resultStr: ", SCORE: ", detailsTitle: "MODULE DETAILS", lblBest: "BEST:",
+        victory: "VICTORY!", draw: "DRAW!", youWin: "YOU WIN!", cpuWins: "CPU WINS!",
+        ctrlKb: "CONTROL: KEYBOARD (PC)", ctrlTouch: "CONTROL: CLOUD PAD (BT)"
     }
 };
 
 let currentLang = safeStorage.getItem('arcade_lang') || 'uk';
 let isMuted = safeStorage.getItem('arcade_muted') === 'true';
-let isCRT = safeStorage.getItem('arcade_crt') !== 'false'; 
-let selectedDeviceType = 'pc';
+let selectedDeviceType = safeStorage.getItem('arcade_device') || 'pc';
 let selectedMenuGame = 'tetris';
 
 const canvas = document.getElementById('gameCanvas');
@@ -577,23 +874,19 @@ const nextCanvas = document.getElementById('nextCanvas');
 const nextCtx = nextCanvas.getContext('2d');
 const holdCanvas = document.getElementById('holdCanvas');
 const holdCtx = holdCanvas.getContext('2d');
-const menuPreviewCanvas = document.getElementById('menuPreviewCanvas');
-const menuPreviewCtx = menuPreviewCanvas.getContext('2d');
 
 const startMenu = document.getElementById('start-menu');
 const pauseMenu = document.getElementById('pause-menu');
 const gameOverMenu = document.getElementById('game-over-menu');
 const finalScoreText = document.getElementById('final-score');
-const currentGameNameLabel = document.getElementById('current-game-name');
 const bootUsernameInput = document.getElementById('boot-username');
 const userDisplayTag = document.getElementById('user-display-tag');
 const muteBtn = document.getElementById('btn-mute');
-const crtBtn = document.getElementById('btn-crt');
 const screenFrame = document.getElementById('screenFrame');
 
 let currentGame = ''; let isPaused = false; let isPlaying = false; let score = 0; let lastTime = 0;
 let linesClearedTotal = 0; let currentLevel = 0; let comboMultiplier = 1;
-let currentPlayerName = "MR.PAYTUR";
+let currentPlayerName = "МАКСИМ";
 
 let particles = [];
 let shakeTimer = 0;
@@ -633,6 +926,7 @@ function triggerScreenShake(durationMs = 150) {
 }
 
 function handleScreenShakeEffect(dt) {
+    if (isNaN(dt) || dt <= 0) return;
     if (shakeTimer > 0) {
         shakeTimer -= dt;
         const intensity = 3;
@@ -652,7 +946,7 @@ let player = { pos: {x: 0, y: 0}, matrix: null };
 let nextPieceMatrix = null;
 
 let snake = [], snakeDir = { x: 0, y: -1 }, snakeNextDir = { x: 0, y: -1 };
-let apple = { x: 0, y: 0 }, tetrisDropCounter = 0, snakeTimer = 0;
+let apple = { x: 0, y: 0 }, tetrisDropCounter = 0, snakeGameTimer = 0;
 let pongPaddle = { x: 4, y: 19, width: 4, height: 0.8 }, pongBall = { x: 6, y: 10, vx: 0.1, vy: 0.15, radius: 0.4 };
 let brickPaddle = { x: 4, y: 19, width: 4, height: 0.8 }, brickBall = { x: 6, y: 15, vx: 0.08, vy: -0.12 }, bricks = [];
 let tttBoard = new Array(9).fill(''), tttTurn = 'X';
@@ -669,12 +963,14 @@ function updateUIStrings() {
     document.getElementById('btn-mobile').innerText = lang.btnMobile;
     document.getElementById('btn-launch-text').innerText = lang.btnLaunch;
 
-    if (!isPlaying) currentGameNameLabel.innerText = "ARCADE OS";
     document.getElementById('tx-select-module').innerText = lang.selectModule;
-    userDisplayTag.innerText = lang.userTag + currentPlayerName;
+    userDisplayTag.innerHTML = lang.userTag + `<span>${currentPlayerName}</span>`;
+    document.getElementById('user-pill-name').innerText = currentPlayerName;
     document.getElementById('tx-paused').innerText = lang.paused;
     document.getElementById('tx-resume').innerText = lang.resume;
     document.getElementById('tx-again').innerText = lang.again;
+    document.getElementById('tx-game-details-title').innerText = lang.detailsTitle;
+    document.getElementById('tx-lbl-best').innerText = lang.lblBest;
 
     document.getElementById('btn-pc').classList.toggle('selected', selectedDeviceType === 'pc');
     document.getElementById('btn-mobile').classList.toggle('selected', selectedDeviceType === 'mobile');
@@ -683,18 +979,17 @@ function updateUIStrings() {
     document.getElementById('boot-lang-uk').classList.toggle('active', currentLang === 'uk');
     document.getElementById('boot-lang-en').classList.toggle('active', currentLang === 'en');
     
+    document.getElementById('hardware-control-desc').innerText = selectedDeviceType === 'pc' ? lang.ctrlKb : lang.ctrlTouch;
     muteBtn.innerText = isMuted ? "❌" : "🔊";
-    crtBtn.classList.toggle('active', isCRT);
-    screenFrame.classList.toggle('crt-mode', isCRT);
     
     updateSidebarStats();
-    updateMenuPreviewCard();
+    selectListGame(selectedMenuGame, false);
 }
 
-function selectDevice(type) { selectedDeviceType = type; playSound('click'); updateUIStrings(); }
+function selectDevice(type) { selectedDeviceType = type; safeStorage.setItem('arcade_device', type); playSound('click'); updateUIStrings(); }
 
 function launchConsole() {
-    let name = bootUsernameInput.value.trim().toUpperCase() || "MR.PAYTUR";
+    let name = bootUsernameInput.value.trim().toUpperCase() || "МАКСИМ";
     currentPlayerName = name;
     safeStorage.setItem('arcade_username', name);
     document.getElementById('welcome-screen').classList.add('hidden');
@@ -702,7 +997,6 @@ function launchConsole() {
 }
 
 function changeLanguage(lang) { currentLang = lang; safeStorage.setItem('arcade_lang', lang); playSound('click'); updateUIStrings(); }
-function toggleCRT() { isCRT = !isCRT; safeStorage.setItem('arcade_crt', isCRT); playSound('click'); updateUIStrings(); }
 function toggleMute() { isMuted = !isMuted; safeStorage.setItem('arcade_muted', isMuted); updateUIStrings(); }
 
 let audioCtx = null;
@@ -714,20 +1008,20 @@ function playSound(type, freq = null) {
         initAudio(); const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
         osc.connect(gain); gain.connect(audioCtx.destination); const now = audioCtx.currentTime;
         if (type === 'bgm') {
-            osc.type = 'triangle'; osc.frequency.setValueAtTime(freq, now); gain.gain.setValueAtTime(0.015, now);
-            gain.gain.linearRampToValueAtTime(0, now + 0.15); osc.start(now); osc.stop(now + 0.15);
+            osc.type = 'triangle'; osc.frequency.setValueAtTime(freq, now); gain.gain.setValueAtTime(0.012, now);
+            gain.gain.linearRampToValueAtTime(0, now + 0.12); osc.start(now); osc.stop(now + 0.12);
         } else if (type === 'click') {
-            osc.type = 'square'; osc.frequency.setValueAtTime(160, now); gain.gain.setValueAtTime(0.03, now);
+            osc.type = 'square'; osc.frequency.setValueAtTime(150, now); gain.gain.setValueAtTime(0.02, now);
             gain.gain.linearRampToValueAtTime(0, now + 0.04); osc.start(now); osc.stop(now + 0.04);
         } else if (type === 'score') {
-            osc.type = 'sine'; osc.frequency.setValueAtTime(450, now); osc.frequency.setValueAtTime(650, now + 0.05);
-            gain.gain.setValueAtTime(0.06, now); gain.gain.linearRampToValueAtTime(0, now + 0.15); osc.start(now); osc.stop(now + 0.15);
+            osc.type = 'sine'; osc.frequency.setValueAtTime(400, now); osc.frequency.setValueAtTime(600, now + 0.05);
+            gain.gain.setValueAtTime(0.05, now); gain.gain.linearRampToValueAtTime(0, now + 0.15); osc.start(now); osc.stop(now + 0.15);
         } else if (type === 'gameover') {
-            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(110, now); osc.frequency.linearRampToValueAtTime(20, now + 0.5);
-            gain.gain.setValueAtTime(0.12, now); gain.gain.linearRampToValueAtTime(0, now + 0.5); osc.start(now); osc.stop(now + 0.5);
+            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(100, now); osc.frequency.linearRampToValueAtTime(20, now + 0.4);
+            gain.gain.setValueAtTime(0.1, now); gain.gain.linearRampToValueAtTime(0, now + 0.4); osc.start(now); osc.stop(now + 0.4);
         } else if (type === 'boot') {
-            osc.type = 'sine'; osc.frequency.setValueAtTime(520, now); osc.frequency.setValueAtTime(1040, now + 0.08);
-            gain.gain.setValueAtTime(0.05, now); gain.gain.linearRampToValueAtTime(0, now + 0.25); osc.start(now); osc.stop(now + 0.25);
+            osc.type = 'sine'; osc.frequency.setValueAtTime(480, now); osc.frequency.setValueAtTime(960, now + 0.08);
+            gain.gain.setValueAtTime(0.04, now); gain.gain.linearRampToValueAtTime(0, now + 0.22); osc.start(now); osc.stop(now + 0.22);
         }
     } catch(e){}
 }
@@ -737,56 +1031,76 @@ if(safeStorage.getItem('arcade_username')) {
     currentPlayerName = safeStorage.getItem('arcade_username');
 }
 
-function selectMenuGame(gameType) {
+/* КЛІК ПО СТОВПЧИКУ ІГОР */
+function selectListGame(gameType, triggerSound = true) {
     selectedMenuGame = gameType;
-    playSound('click');
-    const buttons = document.querySelectorAll('.game-select-btn');
-    buttons.forEach(btn => btn.classList.remove('active-selection'));
-    document.getElementById('sel-' + gameType).classList.add('active-selection');
-    updateMenuPreviewCard();
-}
+    if(triggerSound) playSound('click');
 
-function updateMenuPreviewCard() {
-    document.getElementById('menu-game-title').innerText = selectedMenuGame.toUpperCase();
-    const bestVal = safeStorage.getItem('best_val_v4_' + selectedMenuGame) || 0;
+    const items = document.querySelectorAll('.game-list-item');
+    items.forEach(i => i.classList.remove('selected-item'));
+
+    const activeItem = document.getElementById('item-' + gameType);
+    if(activeItem) activeItem.classList.add('selected-item');
+
+    document.getElementById('center-game-title').innerText = gameType.toUpperCase();
+    const bestVal = safeStorage.getItem('best_val_v4_' + gameType) || 0;
     document.getElementById('menu-game-record').innerText = bestVal;
 
-    menuPreviewCtx.fillStyle = '#0b0f14';
-    menuPreviewCtx.fillRect(0, 0, 65, 65);
+    const rot = document.getElementById('ctrl-rot');
+    const move = document.getElementById('ctrl-move');
+    const drop = document.getElementById('ctrl-drop');
 
-    if (selectedMenuGame === 'tetris') {
-        menuPreviewCtx.fillStyle = '#38b6ff';
-        menuPreviewCtx.fillRect(15, 35, 12, 12); menuPreviewCtx.fillRect(27, 35, 12, 12);
-        menuPreviewCtx.fillRect(39, 35, 12, 12); menuPreviewCtx.fillRect(27, 23, 12, 12);
-    } else if (selectedMenuGame === 'snake') {
-        menuPreviewCtx.fillStyle = '#33cc66';
-        menuPreviewCtx.fillRect(10, 40, 10, 10); menuPreviewCtx.fillRect(20, 40, 10, 10);
-        menuPreviewCtx.fillRect(30, 40, 10, 10); menuPreviewCtx.fillRect(30, 30, 10, 10);
-        menuPreviewCtx.fillStyle = '#ff3366'; menuPreviewCtx.fillRect(45, 15, 8, 8);
-    } else if (selectedMenuGame === 'pong') {
-        menuPreviewCtx.fillStyle = '#38b6ff';
-        menuPreviewCtx.fillRect(5, 20, 6, 25); menuPreviewCtx.fillRect(54, 15, 6, 25);
-        menuPreviewCtx.fillStyle = '#ffffff'; menuPreviewCtx.fillRect(30, 28, 6, 6);
-    } else if (selectedMenuGame === 'brick') {
-        menuPreviewCtx.fillStyle = '#ff9933';
-        menuPreviewCtx.fillRect(10, 10, 12, 6); menuPreviewCtx.fillRect(24, 10, 12, 6);
-        menuPreviewCtx.fillStyle = '#38b6ff'; menuPreviewCtx.fillRect(20, 52, 25, 5);
-        menuPreviewCtx.fillStyle = '#ffffff'; menuPreviewCtx.fillRect(30, 35, 5, 5);
-    } else if (selectedMenuGame === 'ttt') {
-        menuPreviewCtx.strokeStyle = '#2d3b4d'; menuPreviewCtx.lineWidth = 2;
-        menuPreviewCtx.beginPath(); menuPreviewCtx.moveTo(23, 10); menuPreviewCtx.lineTo(23, 55); menuPreviewCtx.stroke();
-        menuPreviewCtx.beginPath(); menuPreviewCtx.moveTo(10, 23); menuPreviewCtx.lineTo(55, 23); menuPreviewCtx.stroke();
-        menuPreviewCtx.font = "bold 12px sans-serif"; menuPreviewCtx.fillStyle = "#38b6ff"; menuPreviewCtx.fillText("X", 12, 20);
-    } else if (selectedMenuGame === 'invaders') {
-        menuPreviewCtx.fillStyle = '#ffff33'; menuPreviewCtx.fillRect(15, 15, 35, 15);
-        menuPreviewCtx.fillStyle = '#38b6ff'; menuPreviewCtx.fillRect(25, 45, 15, 10);
+    if(gameType === 'tetris') {
+        rot.innerText = "SPACE / UP / ↺"; move.innerText = "◀ ▶ / LEFT / RIGHT"; drop.innerText = "▼ / DOWN";
+    } else if(gameType === 'snake') {
+        rot.innerText = "—"; move.innerText = "◀ ▶ ▲ ▼ СТРІЛКИ"; drop.innerText = "—";
+    } else if(gameType === 'invaders') {
+        rot.innerText = "SPACE / SHOOT"; move.innerText = "◀ ▶ / LEFT / RIGHT"; drop.innerText = "—";
+    } else if(gameType === 'ttt') {
+        rot.innerText = "КЛІК ПО СІТЦІ"; move.innerText = "МИШКА / СЕНСОР"; drop.innerText = "—";
+    } else {
+        rot.innerText = "—"; move.innerText = "◀ ▶ / LEFT / RIGHT"; drop.innerText = "—";
+    }
+
+    renderCenterCardPreview(gameType);
+}
+
+/* МАЛЮВАННЯ ПРЕВ'Ю */
+function renderCenterCardPreview(gameType) {
+    const c = document.getElementById('center-preview-canvas');
+    if(!c) return;
+    const ctx = c.getContext('2d');
+    ctx.clearRect(0,0,c.width,c.height);
+
+    if(gameType === 'tetris') {
+        ctx.fillStyle = '#ff3366'; ctx.fillRect(20, 110, 20, 20); ctx.fillRect(40, 110, 20, 20); ctx.fillRect(60, 110, 20, 20); ctx.fillRect(40, 90, 20, 20);
+        ctx.fillStyle = '#33ccff'; ctx.fillRect(10, 130, 20, 20); ctx.fillRect(30, 130, 20, 20); ctx.fillRect(50, 130, 20, 20); ctx.fillRect(70, 130, 20, 20);
+        ctx.fillStyle = '#ffff33'; ctx.fillRect(55, 70, 15, 15); ctx.fillRect(70, 70, 15, 15); ctx.fillRect(55, 85, 15, 15); ctx.fillRect(70, 85, 15, 15);
+    } else if(gameType === 'snake') {
+        ctx.fillStyle = '#33cc66'; ctx.fillRect(15, 80, 15, 15); ctx.fillRect(30, 80, 15, 15); ctx.fillRect(45, 80, 15, 15); ctx.fillRect(45, 65, 15, 15); ctx.fillRect(45, 50, 15, 15);
+        ctx.fillStyle = '#ff3366'; ctx.fillRect(45, 20, 12, 12);
+    } else if(gameType === 'pong') {
+        ctx.fillStyle = '#38b6ff'; ctx.fillRect(10, 40, 10, 50); ctx.fillRect(80, 70, 10, 50);
+        ctx.fillStyle = '#fff'; ctx.fillRect(48, 65, 8, 8);
+    } else if(gameType === 'brick') {
+        ctx.fillStyle = '#ff9933'; ctx.fillRect(10, 20, 24, 12); ctx.fillRect(38, 20, 24, 12); ctx.fillRect(66, 20, 24, 12);
+        ctx.fillStyle = '#ff3366'; ctx.fillRect(10, 36, 24, 12); ctx.fillRect(38, 36, 24, 12); ctx.fillRect(66, 36, 24, 12);
+        ctx.fillStyle = '#38b6ff'; ctx.fillRect(30, 125, 40, 8);
+        ctx.fillStyle = '#fff'; ctx.fillRect(48, 90, 6, 6);
+    } else if(gameType === 'ttt') {
+        ctx.strokeStyle = '#203145'; ctx.lineWidth = 4;
+        ctx.beginPath(); ctx.moveTo(35, 15); ctx.lineTo(35, 135); ctx.moveTo(65, 15); ctx.lineTo(65, 135);
+        ctx.moveTo(10, 55); ctx.lineTo(90, 55); ctx.moveTo(10, 95); ctx.lineTo(90, 95); ctx.stroke();
+        ctx.font = "bold 26px sans-serif"; ctx.fillStyle = "#38b6ff"; ctx.fillText("X", 12, 45); ctx.fillStyle = "#ff3366"; ctx.fillText("O", 42, 85);
+    } else if(gameType === 'invaders') {
+        ctx.fillStyle = '#ffff33'; ctx.fillRect(25, 30, 50, 25); ctx.fillRect(35, 55, 30, 10);
+        ctx.fillStyle = '#38b6ff'; ctx.fillRect(45, 110, 12, 12);
     }
 }
 
 function bootSelectedGame() {
     currentGame = selectedMenuGame; isPlaying = true;
     startMenu.classList.add('hidden');
-    currentGameNameLabel.innerText = selectedMenuGame.toUpperCase();
     restartCurrentGame();
 }
 
@@ -806,14 +1120,15 @@ function restartCurrentGame() {
         arena.forEach(row => row.fill(0)); nextPieceMatrix = null; playerReset();
     } else if (currentGame === 'snake') {
         snake = [{x: 6, y: 10}, {x: 6, y: 11}, {x: 6, y: 12}];
-        snakeDir = {x: 0, y: -1}; snakeNextDir = {x: 0, y: -1}; snakeTimer = 0; spawnApple();
+        snakeDir = {x: 0, y: -1}; snakeNextDir = {x: 0, y: -1}; snakeGameTimer = 0; spawnApple();
     } else if (currentGame === 'pong') {
         pongPaddle.x = 4; pongBall = { x: 6, y: 5, vx: 0.09, vy: 0.13, radius: 0.4 };
     } else if (currentGame === 'brick') {
         brickPaddle.x = 4; brickBall = { x: 6, y: 14, vx: 0.08, vy: -0.11 }; bricks = [];
         for (let r = 0; r < 4; r++) { for (let c = 0; c < 6; c++) { bricks.push({ x: c * 2, y: r + 2, status: 1, color: pieceColors[r+1] }); } }
-    } else if (currentGame === 'ttt') { tttBoard.fill(''); tttTurn = 'X'; }
-    else if (currentGame === 'invaders') {
+    } else if (currentGame === 'ttt') { 
+        tttBoard.fill(''); tttTurn = 'X'; 
+    } else if (currentGame === 'invaders') {
         invaderPlayerX = 5; invaderBullets = []; invaderEnemies = []; invaderDir = 1; invaderMoveTimer = 0;
         for (let r = 0; r < 3; r++) { for (let c = 1; c < 11; c++) { invaderEnemies.push({ x: c, y: r + 2, alive: true }); } }
     }
@@ -849,12 +1164,12 @@ function updateSidebarStats() {
 }
 
 function drawMiniPreviews() {
-    nextCtx.fillStyle = '#11161d'; nextCtx.fillRect(0, 0, 60, 50);
-    holdCtx.fillStyle = '#11161d'; holdCtx.fillRect(0, 0, 60, 50);
+    nextCtx.fillStyle = '#06090e'; nextCtx.fillRect(0, 0, 60, 50);
+    holdCtx.fillStyle = '#06090e'; holdCtx.fillRect(0, 0, 60, 50);
     if (currentGame === 'tetris' && nextPieceMatrix) {
         nextCtx.fillStyle = '#38b6ff';
         nextPieceMatrix.forEach((row, y) => row.forEach((v, x) => {
-            if (v) nextCtx.fillRect(15 + x * 10, 12 + y * 10, 8, 8);
+            if (v) nextCtx.fillRect(18 + x * 9, 12 + y * 9, 7, 7);
         }));
     }
 }
@@ -864,7 +1179,7 @@ function actionLeft() {
     if (!isPlaying || isPaused) return;
     if (currentGame === 'tetris') { player.pos.x--; if(collide(arena,player)) player.pos.x++; }
     else if (currentGame === 'snake' && snakeDir.x === 0) { snakeNextDir = { x: -1, y: 0 }; }
-    else if ((currentGame === 'pong' || currentGame === 'brick') && pongPaddle.x > 0) { pongPaddle.x = Math.max(0, pongPaddle.x - 0.5); brickPaddle.x = pongPaddle.x; }
+    else if ((currentGame === 'pong' || currentGame === 'brick') && pongPaddle.x > 0) { pongPaddle.x = Math.max(0, pongPaddle.x - 0.6); brickPaddle.x = pongPaddle.x; }
     else if (currentGame === 'invaders' && invaderPlayerX > 0) { invaderPlayerX--; }
     playSound('click');
 }
@@ -873,7 +1188,7 @@ function actionRight() {
     if (!isPlaying || isPaused) return;
     if (currentGame === 'tetris') { player.pos.x++; if(collide(arena,player)) player.pos.x--; }
     else if (currentGame === 'snake' && snakeDir.x === 0) { snakeNextDir = { x: 1, y: 0 }; }
-    else if ((currentGame === 'pong' || currentGame === 'brick') && pongPaddle.x < 12 - pongPaddle.width) { pongPaddle.x = Math.min(12 - pongPaddle.width, pongPaddle.x + 0.5); brickPaddle.x = pongPaddle.x; }
+    else if ((currentGame === 'pong' || currentGame === 'brick') && pongPaddle.x < 12 - pongPaddle.width) { pongPaddle.x = Math.min(12 - pongPaddle.width, pongPaddle.x + 0.6); brickPaddle.x = pongPaddle.x; }
     else if (currentGame === 'invaders' && invaderPlayerX < 11) { invaderPlayerX++; }
     playSound('click');
 }
@@ -886,35 +1201,17 @@ function actionDown() {
 
 function actionRotCW() {
     if (!isPlaying || isPaused) return;
-    if (currentGame === 'tetris') { 
-        rotateMatrix(player.matrix); 
-        if(collide(arena,player)) { 
-            // Стінний штовхач назад, якщо вперлися
-            player.pos.x > 6 ? player.pos.x-- : player.pos.x++;
-            if (collide(arena, player)) {
-                player.pos.x > 6 ? player.pos.x++ : player.pos.x--;
-                rotateMatrix(player.matrix, -1); 
-            }
-        } else playSound('click'); 
-    }
+    if (currentGame === 'tetris') { rotateMatrix(player.matrix); if(collide(arena,player)) { rotateMatrix(player.matrix); rotateMatrix(player.matrix); rotateMatrix(player.matrix); } else playSound('click'); }
+    else if (currentGame === 'snake' && snakeDir.y === 0) { snakeNextDir = { x: 0, y: -1 }; playSound('click'); }
     else if (currentGame === 'invaders') { invaderBullets.push({ x: invaderPlayerX + 0.5, y: 18 }); playSound('score'); }
 }
 
 function actionRotCCW() {
     if (!isPlaying || isPaused) return;
-    if (currentGame === 'tetris') { 
-        rotateMatrix(player.matrix, -1); 
-        if(collide(arena,player)) { 
-            player.pos.x > 6 ? player.pos.x-- : player.pos.x++;
-            if (collide(arena, player)) {
-                player.pos.x > 6 ? player.pos.x++ : player.pos.x--;
-                rotateMatrix(player.matrix); 
-            }
-        } else playSound('click'); 
-    }
+    if (currentGame === 'tetris') { rotateMatrix(player.matrix); rotateMatrix(player.matrix); rotateMatrix(player.matrix); if(collide(arena,player)) { rotateMatrix(player.matrix); } else playSound('click'); }
 }
 
-/* ЛОГІКА ТЕТРІСА */
+/* ТЕТРІС */
 function createPiece(t) {
     if (t === 'I') return [[0,1,0,0],[0,1,0,0],[0,1,0,0],[0,1,0,0]]; if (t === 'O') return [[4,4],[4,4]];
     if (t === 'L') return [[0,2,0],[0,2,0],[0,2,2]]; if (t === 'J') return [[0,3,0],[0,3,0],[3,3,0]];
@@ -950,29 +1247,20 @@ function tetrisSweep() {
     let rowCount = 0;
     outer: for (let y = arena.length - 1; y > 0; --y) {
         for (let x = 0; x < arena[y].length; ++x) { if (arena[y][x] === 0) continue outer; }
-        
-        for(let x=0; x<12; x++) {
-            if(arena[y][x]) spawnParticles(x, y, pieceColors[arena[y][x]] || '#fff', 4);
-        }
-
-        arena.splice(y, 1); arena.unshift(new Array(12).fill(0)); ++y;
-        rowCount++;
+        for(let x=0; x<12; x++) { if(arena[y][x]) spawnParticles(x, y, pieceColors[arena[y][x]] || '#fff', 4); }
+        arena.splice(y, 1); arena.unshift(new Array(12).fill(0)); ++y; rowCount++;
     }
     if (rowCount > 0) {
-        linesClearedTotal += rowCount;
-        score += rowCount * 15 * comboMultiplier;
-        comboMultiplier++;
-        currentLevel = Math.floor(linesClearedTotal / 10);
-        playSound('score');
-        triggerScreenShake(200);
+        linesClearedTotal += rowCount; score += rowCount * 15 * comboMultiplier; comboMultiplier++;
+        currentLevel = Math.floor(linesClearedTotal / 10); playSound('score'); triggerScreenShake(200);
     } else { comboMultiplier = 1; }
 }
-function rotateMatrix(matrix, dir = 1) {
+function rotateMatrix(matrix) {
     for (let y = 0; y < matrix.length; ++y) { for (let x = 0; x < y; ++x) { [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]]; } }
-    if (dir > 0) matrix.forEach(row => row.reverse()); else matrix.reverse();
+    matrix.forEach(row => row.reverse());
 }
 
-/* ІНШІ ІГРИ */
+/* ЗМІЙКА, ПОНГ, БРІК */
 function spawnApple() {
     apple.x = Math.floor(Math.random() * 12); apple.y = Math.floor(Math.random() * 20);
     if (snake.some(c => c.x === apple.x && c.y === apple.y)) spawnApple();
@@ -982,9 +1270,7 @@ function updateSnake() {
     if (head.x < 0 || head.x >= 12 || head.y < 0 || head.y >= 20 || snake.some(c => c.x === head.x && c.y === head.y)) { triggerGameOver(); return; }
     snake.unshift(head);
     if (head.x === apple.x && head.y === apple.y) {
-        score += 10; updateSidebarStats();
-        spawnParticles(apple.x, apple.y, '#ff3366', 15);
-        spawnApple(); playSound('score');
+        score += 10; updateSidebarStats(); spawnParticles(apple.x, apple.y, '#ff3366', 15); spawnApple(); playSound('score');
     } else { snake.pop(); }
 }
 function updatePong() {
@@ -992,8 +1278,7 @@ function updatePong() {
     if (pongBall.x < 0 || pongBall.x > 12) { pongBall.vx *= -1; playSound('click'); }
     if (pongBall.y < 0) { pongBall.vy *= -1; playSound('click'); }
     if (pongBall.y >= pongPaddle.y && pongBall.x >= pongPaddle.x && pongBall.x <= pongPaddle.x + pongPaddle.width) {
-        pongBall.vy = -Math.abs(pongBall.vy); score += 5; updateSidebarStats(); playSound('score');
-        spawnParticles(pongBall.x, pongBall.y, '#38b6ff', 8);
+        pongBall.vy = -Math.abs(pongBall.vy); score += 5; updateSidebarStats(); playSound('score'); spawnParticles(pongBall.x, pongBall.y, '#38b6ff', 8);
     }
     if (pongBall.y > 20) triggerGameOver();
 }
@@ -1012,37 +1297,69 @@ function updateBrick() {
     if (bricks.every(b => b.status === 0)) triggerGameOver((i18n[currentLang] || i18n.uk).victory);
 }
 
+/* ХРЕСТИКИ НУЛИКИ */
 canvas.addEventListener('pointerdown', event => {
     if (currentGame !== 'ttt' || !isPlaying) return;
-    const r = canvas.getBoundingClientRect(); const mx = (event.clientX - r.left) / (r.width / 12); const my = (event.clientY - r.top) / (r.height / 20);
+    const r = canvas.getBoundingClientRect(); 
+    const mx = (event.clientX - r.left) / (r.width / 12); 
+    const my = (event.clientY - r.top) / (r.height / 20);
+    
     if (mx >= 1 && mx <= 11 && my >= 4 && my <= 14 && tttTurn === 'X') {
         let idx = Math.floor((my - 4) / 3.3) * 3 + Math.floor((mx - 1) / 3.3);
         if (idx >= 0 && idx < 9 && tttBoard[idx] === '') {
-            tttBoard[idx] = 'X'; playSound('score');
-            let win = checkTTTWin(tttBoard);
-            const lang = i18n[currentLang] || i18n.uk;
-            if (win) triggerGameOver(win === 'Draw' ? lang.draw : lang.youWin); else { tttTurn = 'O'; setTimeout(aiMove, 300); }
+            tttBoard[idx] = 'X'; 
+            playSound('score');
+            
+            let win = checkTTTWin(tttBoard); 
+            if (win) { 
+                handleTTTEndGame(win); 
+            } else { 
+                tttTurn = 'O'; 
+                setTimeout(aiMove, 400); 
+            }
         }
     }
 });
+
+function handleTTTEndGame(winner) {
+    const lang = i18n[currentLang] || i18n.uk;
+    if (winner === 'X') {
+        score += 100;
+        triggerGameOver(lang.youWin);
+    } else if (winner === 'O') {
+        triggerGameOver(lang.cpuWins);
+    } else {
+        score += 25;
+        triggerGameOver(lang.draw);
+    }
+}
+
 function checkTTTWin(b) {
     const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
     for (let l of lines) { if (b[l[0]] && b[l[0]] === b[l[1]] && b[l[0]] === b[l[2]]) return b[l[0]]; }
     return b.every(c => c !== '') ? 'Draw' : null;
 }
+
 function aiMove() {
+    if (currentGame !== 'ttt' || !isPlaying) return;
     let empty = tttBoard.map((c, i) => c === '' ? i : null).filter(v => v !== null);
-    if (empty.length > 0 && isPlaying) {
-        tttBoard[empty[Math.floor(Math.random() * empty.length)]] = 'O'; playSound('click');
+    if (empty.length > 0) {
+        tttBoard[empty[Math.floor(Math.random() * empty.length)]] = 'O'; 
+        playSound('click');
         let win = checkTTTWin(tttBoard);
-        if (win) triggerGameOver(win === 'Draw' ? i18n[currentLang].draw : i18n[currentLang].cpuWins); else tttTurn = 'X';
+        if (win) { 
+            handleTTTEndGame(win); 
+        } else { 
+            tttTurn = 'X'; 
+        }
     }
 }
 
+/* SPACE INVADERS */
 function updateInvaders(dt) {
     for (let i = invaderBullets.length - 1; i >= 0; i--) { invaderBullets[i].y -= 0.4; if (invaderBullets[i].y < 0) invaderBullets.splice(i, 1); }
     invaderMoveTimer += dt;
-    if (invaderMoveTimer > 400) {
+    if (invaderMoveTimer > 350) {
         let shiftDown = false;
         invaderEnemies.forEach(e => { if (e.alive) { let nx = e.x + invaderDir * 0.5; if (nx > 11 || nx < 0.5) shiftDown = true; } });
         if (shiftDown) { invaderDir *= -1; invaderEnemies.forEach(e => { if (e.alive) { e.y += 1; if (e.y >= 18) triggerGameOver(); } }); }
@@ -1053,8 +1370,7 @@ function updateInvaders(dt) {
         let b = invaderBullets[bIdx];
         for (let e of invaderEnemies) {
             if (e.alive && b.x >= e.x && b.x <= e.x + 1 && b.y >= e.y && b.y <= e.y + 0.8) { 
-                e.alive = false; score += 10; updateSidebarStats(); 
-                spawnParticles(e.x, e.y, '#ffff33', 10);
+                e.alive = false; score += 10; updateSidebarStats(); spawnParticles(e.x, e.y, '#ffff33', 10);
                 invaderBullets.splice(bIdx,1); playSound('click'); break; 
             }
         }
@@ -1062,15 +1378,16 @@ function updateInvaders(dt) {
     if (invaderEnemies.every(e => !e.alive)) triggerGameOver(i18n[currentLang].victory);
 }
 
+/* МАЛЮВАННЯ */
 function draw() {
-    context.fillStyle = '#0a0f14'; context.fillRect(0, 0, 12, 20);
-    context.strokeStyle = 'rgba(255, 255, 255, 0.015)'; context.lineWidth = 0.05;
+    context.fillStyle = '#06090e'; context.fillRect(0, 0, 12, 20);
+    context.strokeStyle = 'rgba(56, 182, 255, 0.02)'; context.lineWidth = 0.05;
     for (let x = 0; x <= 12; x++) { context.beginPath(); context.moveTo(x, 0); context.lineTo(x, 20); context.stroke(); }
     for (let y = 0; y <= 20; y++) { context.beginPath(); context.moveTo(0, y); context.lineTo(12, y); context.stroke(); }
 
     if (currentGame === 'tetris') {
-        arena.forEach((r, y) => r.forEach((v, x) => { if(v) { context.fillStyle = pieceColors[v] || '#38b6ff'; context.fillRect(x,y,0.92,0.92); } }));
-        if (player.matrix) player.matrix.forEach((r, y) => r.forEach((v, x) => { if(v) { context.fillStyle = pieceColors[v] || '#38b6ff'; context.fillRect(x+player.pos.x, y+player.pos.y, 0.92,0.92); } }));
+        arena.forEach((r, y) => r.forEach((v, x) => { if(v) { context.fillStyle = pieceColors[v]; context.fillRect(x,y,0.92,0.92); } }));
+        if (player.matrix) player.matrix.forEach((r, y) => r.forEach((v, x) => { if(v) { context.fillStyle = pieceColors[v]; context.fillRect(x+player.pos.x, y+player.pos.y, 0.92,0.92); } }));
     } else if (currentGame === 'snake') {
         context.fillStyle = '#ff3366'; context.fillRect(apple.x, apple.y, 0.9, 0.9);
         context.fillStyle = '#33cc66'; snake.forEach(c => context.fillRect(c.x, c.y, 0.92, 0.92));
@@ -1082,9 +1399,9 @@ function draw() {
         context.fillStyle = '#ffffff'; context.fillRect(brickBall.x, brickBall.y, 0.5, 0.5);
         bricks.forEach(b => { if(b.status===1){ context.fillStyle = b.color; context.fillRect(b.x, b.y, 1.8, 0.7); } });
     } else if (currentGame === 'ttt') {
-        context.strokeStyle = '#38b6ff'; context.lineWidth = 0.1;
+        context.strokeStyle = '#203145'; context.lineWidth = 0.1;
         for(let i=1; i<3; i++) {
-            context.beginPath(); context.moveTo(1 + i*3.3, 4); context.lineTo(1 + i*3.3, 14); context.stroke();
+            context.beginPath(); context.moveTo(1 + i*3.3, 4); context.lineTo(1 + i*3.3, 14);
             context.beginPath(); context.moveTo(1, 4 + i*3.3); context.lineTo(11, 4 + i*3.3); context.stroke();
         }
         tttBoard.forEach((cell, i) => {
@@ -1097,31 +1414,38 @@ function draw() {
         context.fillStyle = '#ff3366'; invaderBullets.forEach(b => context.fillRect(b.x, b.y, 0.2, 0.5));
         context.fillStyle = '#ffff33'; invaderEnemies.forEach(e => { if (e.alive) context.fillRect(e.x, e.y, 0.8, 0.6); });
     }
-
     drawParticles();
 }
 
 function update(time = 0) {
-    const deltaTime = time - lastTime; lastTime = time;
-    
+    if (!lastTime) lastTime = time;
+    let deltaTime = time - lastTime; 
+    lastTime = time;
+
+    if (deltaTime > 200) deltaTime = 200; // Захист від стрибків часу при згортанні вкладки
+
     handleScreenShakeEffect(deltaTime);
     updateParticles();
 
     if (isPlaying && !isPaused) {
         bgmTimer += deltaTime;
-        if (bgmTimer > 300) { playSound('bgm', bgmNotes[bgmStep % bgmNotes.length]); bgmStep++; bgmTimer = 0; }
+        if (bgmTimer > 320 && currentGame !== 'ttt') { 
+            playSound('bgm', bgmNotes[bgmStep % bgmNotes.length]); 
+            bgmStep++; 
+            bgmTimer = 0; 
+        }
 
         if (currentGame === 'tetris') {
             tetrisDropCounter += deltaTime;
-            let currentSpeedMs = Math.max(100, 600 - (currentLevel * 60));
-            if (tetrisDropCounter > currentSpeedMs) playerDrop();
+            let speed = Math.max(100, 600 - (currentLevel * 65));
+            if (tetrisDropCounter > speed) playerDrop();
         } else if (currentGame === 'snake') {
-            snakeTimer += deltaTime; if (snakeTimer > 120) { updateSnake(); snakeTimer = 0; }
+            snakeGameTimer += deltaTime; 
+            if (snakeGameTimer > 130) { updateSnake(); snakeGameTimer = 0; }
         } else if (currentGame === 'pong') updatePong();
         else if (currentGame === 'brick') updateBrick();
         else if (currentGame === 'invaders') updateInvaders(deltaTime);
     }
-    
     draw();
     requestAnimationFrame(update);
 }
@@ -1134,24 +1458,24 @@ document.addEventListener('keydown', event => {
     if (!isPlaying || isPaused) return;
     if (k === 37) actionLeft(); if (k === 39) actionRight();
     if (k === 38) actionRotCW(); if (k === 40) actionDown();
-    if (k === 32) actionRotCCW();
+    if (k === 32) actionRotCW();
 });
 
-/* ІНТЕЛЕКТУАЛЬНЕ СЕНСОРНЕ КЕРУВАННЯ (З ФІКСОМ ЗАТИСКАННЯ) */
+/* АПАРАТНІ КНОПКИ З ЕМУЛЯЦІЄЮ ЗАТИСКАННЯ */
+let intervalId = null;
+let timeoutId = null;
+
 function setupRepeatButton(elementId, actionFn) {
     const el = document.getElementById(elementId);
     if (!el) return;
-    let timeoutId = null;
-    let intervalId = null;
 
     const startAction = (e) => {
         e.preventDefault();
         clearInterval(intervalId);
         clearTimeout(timeoutId);
         
-        actionFn(); // Миттєве перше спрацювання
+        actionFn();
         
-        // Затримка перед початком безперервного циклу руху (імітація реального затискання)
         timeoutId = setTimeout(() => {
             intervalId = setInterval(actionFn, 65); 
         }, 220);
@@ -1177,18 +1501,15 @@ function setupSingleButton(elementId, actionFn) {
     });
 }
 
-// Прив'язка кнопок руху (з автоповтором при затисканні)
 setupRepeatButton('btn-move-left', actionLeft);
 setupRepeatButton('btn-move-right', actionRight);
 setupRepeatButton('btn-move-down', actionDown);
 
-// Прив'язка статичних кнопок (одиночне натискання)
 setupSingleButton('btn-rot-cw', actionRotCW);
 setupSingleButton('btn-rot-ccw', actionRotCCW);
-setupSingleButton('btn-pause-flat', togglePause);
+setupSingleButton('btn-game-pause', togglePause);
 
-document.getElementById('sel-tetris').classList.add('active-selection');
-try { updateUIStrings(); update(); } catch(e) { console.error(e); }
+try { updateUIStrings(); requestAnimationFrame(update); } catch(e) { console.error(e); }
 </script>
 </body>
 </html>
